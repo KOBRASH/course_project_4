@@ -27,6 +27,9 @@ class VacancyAPI(ABC):
         """
         pass
 
+    def parse_response(self, response):
+        pass
+
 class HeadHunterAPI(VacancyAPI):
     def get_vacancies(self, search_query):
         """
@@ -53,6 +56,11 @@ class HeadHunterAPI(VacancyAPI):
         else:
             print("Ошибка при запросе вакансий с HeadHunter:", response.status_code)
             return []
+    def parse_response(self, response):
+            vacancies = response.json().get("items", [])
+            return [
+                Vacancy(vacancy["name"], vacancy["alternate_url"], vacancy["salary"], vacancy["snippet"]["requirement"])
+                for vacancy in vacancies]
 
 class SuperJobAPI(VacancyAPI):
     def get_vacancies(self, search_query):
@@ -84,3 +92,7 @@ class SuperJobAPI(VacancyAPI):
         else:
             print("Ошибка при запросе вакансий с SuperJob:", response.status_code)
             return []
+    def parse_response(self, response):
+            vacancies = response.json().get("objects", [])
+            return [Vacancy(vacancy["profession"], vacancy["link"], vacancy["payment_from"], vacancy["candidat"])
+                    for vacancy in vacancies]
