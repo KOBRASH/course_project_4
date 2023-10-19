@@ -12,6 +12,14 @@ class JSONSaver:
         self.filename = filename
         self.vacancies = []
 
+        # Проверяем наличие файла и создаем его при отсутствии
+        try:
+            with open(self.filename, "r", encoding="utf-8"):
+                pass
+        except FileNotFoundError:
+            with open(self.filename, "w", encoding="utf-8"):
+                pass
+
     def add_vacancy(self, vacancy):
         """
         Добавление вакансии в список.
